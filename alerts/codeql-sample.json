@@ -5,7 +5,7 @@
   "state": "open",
   "severity": "medium",
   "package_or_rule": "js/sql-injection",
-  "manifest_or_location": "src/routes/search.ts:23-25",
+  "manifest_or_location": "src/routes/search.ts:25",
   "fixed_version_or_autofix": "autofix available",
   "owner": "data-services",
   "tests": "route tests exist, no malicious input tests found",
