@@ -46,6 +46,13 @@ pip install -e .
 python -m appsec_triage_assistant alerts/dependabot-sample.json
 ```
 
+Optional test run:
+
+```bash
+pip install -e ".[dev]"
+pytest
+```
+
 ## Exercise
 
 Ask Copilot:
@@ -56,6 +63,10 @@ create a triage session that sends the evidence bundle to agents/triage.agent.md
 Keep write/API actions human-approved and preserve the JSON evidence bundle.
 ```
 
+Start with `src/appsec_triage_assistant/sdk_todo.py`. The workshop goal is to map the deterministic loader, agents, skills, challenge step, judge gate, and audit artifacts. Live GitHub API loaders and production credentials are intentionally out of scope.
+
 ## Safety boundary
 
 Do not implement automatic dismissal, severity changes, risk acceptance, or campaign creation in the workshop.
+
+Treat stale, missing, or timed-out CodeQL as missing evidence that caps confidence. Do not interpret absent analysis as proof of low risk.

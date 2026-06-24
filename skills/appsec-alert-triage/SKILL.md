@@ -13,4 +13,4 @@ Choose exactly one route:
 - `needs-codeql-timeout-investigation`
 - `human-escalation`
 
-Apply confidence ceilings for missing CodeQL, missing tests, unknown runtime exposure, and unproven reachability.
+Apply confidence ceilings for stale, missing, or timed-out CodeQL, missing tests, unknown runtime exposure, and unproven reachability.

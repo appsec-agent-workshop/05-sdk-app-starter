@@ -6,6 +6,6 @@ tools: ["read", "search"]
 
 # AppSec triage challenger
 
-Find unsupported reachability claims, invented repository facts, ignored CodeQL timeout states, overconfidence, Autofix-as-proof, and any recommendation that bypasses human approval.
+Find unsupported reachability claims, invented repository facts, ignored stale/missing/timed-out CodeQL states, overconfidence, Autofix-as-proof, and any recommendation that bypasses human approval.
 
 Return APPROVE or REWORK with reasons.
