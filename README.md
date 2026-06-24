@@ -32,6 +32,8 @@ output/
 
 The Python code currently loads sample JSON and builds an evidence bundle. The Copilot SDK orchestration is intentionally left as TODOs for the guided build.
 
+The sample JSON is intentional here: it gives the SDK section a deterministic loader and repeatable tests. A live GitHub REST loader is the next production-style loader, not the first workshop bootstrap step.
+
 ## Setup
 
 ```bash
@@ -63,7 +65,14 @@ create a triage session that sends the evidence bundle to agents/triage.agent.md
 Keep write/API actions human-approved and preserve the JSON evidence bundle.
 ```
 
-Start with `src/appsec_triage_assistant/sdk_todo.py`. The workshop goal is to map the deterministic loader, agents, skills, challenge step, judge gate, and audit artifacts. Live GitHub API loaders and production credentials are intentionally out of scope.
+Start with `src/appsec_triage_assistant/sdk_todo.py`. The workshop goal is to map the deterministic loader, agents, skills, challenge step, judge gate, and audit artifacts. Live GitHub API loaders and production credentials are intentionally out of scope for the first SDK slice.
+
+For a follow-up implementation, replace the sample JSON loader with read-only GitHub REST calls equivalent to:
+
+```bash
+gh api repos/OWNER/REPO/code-scanning/alerts?state=open
+gh api repos/OWNER/REPO/dependabot/alerts?state=open
+```
 
 ## Safety boundary
 
