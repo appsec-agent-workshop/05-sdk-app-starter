@@ -1,0 +1,19 @@
+{
+  "source": "codeql",
+  "repository": "appsec-agent-workshop/demo-api",
+  "alert_number": 2207,
+  "state": "open",
+  "severity": "medium",
+  "package_or_rule": "js/sql-injection",
+  "manifest_or_location": "src/routes/search.ts:48-54",
+  "fixed_version_or_autofix": "autofix available",
+  "owner": "data-services",
+  "tests": "route tests exist, no malicious input tests found",
+  "codeql_status": "current",
+  "runtime_exposure": "authenticated route; authorization behavior unknown",
+  "missing_evidence": [
+    "authorization behavior unknown",
+    "malicious input tests missing",
+    "query parameter constraints unknown"
+  ]
+}

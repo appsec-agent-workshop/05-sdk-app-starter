@@ -1,0 +1,19 @@
+{
+  "source": "dependabot",
+  "repository": "appsec-agent-workshop/demo-api",
+  "alert_number": 1042,
+  "state": "open",
+  "severity": "high",
+  "package_or_rule": "example-template-engine",
+  "manifest_or_location": "services/web/package-lock.json",
+  "fixed_version_or_autofix": ">= 4.2.1",
+  "owner": "web-platform",
+  "tests": "unit tests known, integration tests unknown",
+  "codeql_status": "last successful run 9 days ago",
+  "runtime_exposure": "unknown",
+  "missing_evidence": [
+    "reachability not established",
+    "runtime exposure unknown",
+    "integration test path unknown"
+  ]
+}
