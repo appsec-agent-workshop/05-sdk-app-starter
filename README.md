@@ -48,6 +48,7 @@ Use `python3` instead of `python` if your system does not provide `python` on `P
 
 ```bash
 python -m appsec_triage_assistant alerts/dependabot-sample.json
+python -m appsec_triage_assistant alerts/dependabot-sample.json --triage-session
 ```
 
 Optional test run:
@@ -62,14 +63,14 @@ pytest
 Ask Copilot:
 
 ```text
-Use the README and scaffold files to implement the next smallest SDK step:
-create a triage session that sends the evidence bundle to agents/triage.agent.md.
-Keep write/API actions human-approved and preserve the JSON evidence bundle.
+Use the README and scaffold files to inspect the deterministic triage-session payload.
+Explain how agents/triage.agent.md, the skills directory, and the evidence bundle would map to a future Copilot SDK runner.
+Then choose one next implementation slice, such as adding the challenger/judge step or replacing the sample JSON loader with read-only GitHub REST calls.
 ```
 
-Start with `src/appsec_triage_assistant/sdk_todo.py`. The workshop goal is to map the deterministic loader, agents, skills, challenge step, judge gate, and audit artifacts. Live GitHub API loaders and production credentials are intentionally out of scope for the first SDK slice.
+Start with `src/appsec_triage_assistant/sdk_todo.py`. The workshop goal is to understand the deterministic loader, agents, skills, challenge step, judge gate, and audit artifacts. Live GitHub API loaders and production credentials are intentionally out of scope for the first SDK slice.
 
-For this exercise, the minimum acceptable SDK slice is the deterministic triage-session payload:
+The deterministic triage-session payload already:
 
 - loads `agents/triage.agent.md`
 - registers the `skills/` directory
@@ -88,5 +89,3 @@ gh api repos/OWNER/REPO/dependabot/alerts?state=open
 ## Safety boundary
 
 Do not implement automatic dismissal, severity changes, risk acceptance, or campaign creation in the workshop.
-
-Treat stale, missing, or timed-out CodeQL as missing evidence that caps confidence. Do not interpret absent analysis as proof of low risk.
