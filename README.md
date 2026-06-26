@@ -30,7 +30,7 @@ tests/
 output/
 ```
 
-The Python code currently loads sample JSON and builds an evidence bundle. The Copilot SDK orchestration is intentionally left as TODOs for the guided build.
+The Python code currently loads sample JSON, builds an evidence bundle, and emits the next-smallest deterministic triage-session payload. Live model/API orchestration is intentionally left as a follow-up step.
 
 The sample JSON is intentional here: it gives the SDK section a deterministic loader and repeatable tests. A live GitHub REST loader is the next production-style loader, not the first workshop bootstrap step.
 
@@ -41,6 +41,8 @@ python -m venv .venv
 . .venv/bin/activate
 pip install -e .
 ```
+
+Use `python3` instead of `python` if your system does not provide `python` on `PATH`.
 
 ## Smoke test
 
@@ -66,6 +68,15 @@ Keep write/API actions human-approved and preserve the JSON evidence bundle.
 ```
 
 Start with `src/appsec_triage_assistant/sdk_todo.py`. The workshop goal is to map the deterministic loader, agents, skills, challenge step, judge gate, and audit artifacts. Live GitHub API loaders and production credentials are intentionally out of scope for the first SDK slice.
+
+For this exercise, the minimum acceptable SDK slice is the deterministic triage-session payload:
+
+- loads `agents/triage.agent.md`
+- registers the `skills/` directory
+- embeds the `AlertEvidenceBundle`
+- marks write/API actions as human-approved
+
+A live model call is optional or facilitator-led unless an SDK package and credentials are provided.
 
 For a follow-up implementation, replace the sample JSON loader with read-only GitHub REST calls equivalent to:
 
