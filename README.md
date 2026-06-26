@@ -36,13 +36,13 @@ The sample JSON is intentional here: it gives the SDK section a deterministic lo
 
 ## Setup
 
+Use `python3` instead of `python` if your system does not provide `python` on `PATH`.
+
 ```bash
 python -m venv .venv
 . .venv/bin/activate
 pip install -e .
 ```
-
-Use `python3` instead of `python` if your system does not provide `python` on `PATH`.
 
 ## Smoke test
 
@@ -82,8 +82,8 @@ A live model call is optional or facilitator-led unless an SDK package and crede
 For a follow-up implementation, replace the sample JSON loader with read-only GitHub REST calls equivalent to:
 
 ```bash
-gh api repos/OWNER/REPO/code-scanning/alerts?state=open
-gh api repos/OWNER/REPO/dependabot/alerts?state=open
+gh api "repos/OWNER/REPO/code-scanning/alerts?state=open"
+gh api "repos/OWNER/REPO/dependabot/alerts?state=open"
 ```
 
 ## Safety boundary
