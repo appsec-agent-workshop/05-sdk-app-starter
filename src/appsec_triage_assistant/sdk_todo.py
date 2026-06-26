@@ -1,8 +1,7 @@
-"""Small, deterministic triage-session builder for the guided SDK build.
+"""SDK session helpers for the guided AppSec triage build.
 
-This module deliberately stops before live model/API orchestration. It creates
-the session payload a Copilot SDK runner would send to the triage agent while
-preserving the normalized JSON evidence bundle and the human-approval boundary.
+The deterministic payload is the audit boundary. The SDK runner uses that
+payload as input to a real Copilot SDK session with custom agents and skills.
 """
 
 from __future__ import annotations
@@ -13,6 +12,17 @@ from pathlib import Path
 from typing import Any
 
 from .evidence_bundle import build_evidence_bundle
+
+AGENT_SKILLS = {
+    "triage-agent": ["appsec-alert-triage"],
+    "appsec-triage-challenger": ["challenge-triage-report"],
+    "appsec-triage-judge": ["report-quality"],
+}
+
+TOOL_ALIASES = {
+    "read": "view",
+    "search": "grep",
+}
 
 
 def _read_text(path: Path) -> str:
@@ -52,6 +62,31 @@ def load_agent(agent_path: Path) -> dict[str, Any]:
         "tools": metadata.get("tools", []),
         "instructions": instructions,
     }
+
+
+def build_custom_agent_configs(project_root: Path = Path(".")) -> list[dict[str, Any]]:
+    """Build Copilot SDK custom-agent configs from the markdown agent files."""
+    project_root = project_root.resolve()
+    configs: list[dict[str, Any]] = []
+    for agent_path in [
+        project_root / "agents" / "triage.agent.md",
+        project_root / "agents" / "challenger.agent.md",
+        project_root / "agents" / "judge.agent.md",
+    ]:
+        agent = load_agent(agent_path)
+        tools = [TOOL_ALIASES.get(tool, tool) for tool in agent["tools"]]
+        if "grep" in tools and "glob" not in tools:
+            tools.append("glob")
+        configs.append(
+            {
+                "name": agent["name"],
+                "description": agent["description"],
+                "prompt": agent["instructions"],
+                "tools": tools,
+                "skills": AGENT_SKILLS.get(agent["name"], []),
+            }
+        )
+    return configs
 
 
 def create_triage_session(
@@ -107,3 +142,49 @@ def create_triage_session(
             "shell execution",
         ],
     }
+
+
+async def run_sdk_triage(
+    alert_path: Path,
+    *,
+    project_root: Path = Path("."),
+    model: str | None = None,
+    timeout: float = 180.0,
+) -> str:
+    """Run the triage task through a real GitHub Copilot SDK session."""
+    from copilot import CopilotClient
+    from copilot.rpc import PermissionDecisionApproveOnce, PermissionDecisionReject
+    from copilot.session import PermissionRequestResult
+    from copilot.session_events import AssistantMessageData
+    from copilot.session_events import PermissionRequest
+
+    project_root = project_root.resolve()
+    session_payload = create_triage_session(alert_path, project_root=project_root)
+
+    def approve_read_only(
+        request: PermissionRequest, invocation: dict[str, str]
+    ) -> PermissionRequestResult:
+        if request.kind == "read":
+            return PermissionDecisionApproveOnce()
+        return PermissionDecisionReject()
+
+    session_kwargs: dict[str, Any] = {
+        "on_permission_request": approve_read_only,
+        "working_directory": str(project_root),
+        "skill_directories": [str(project_root / "skills")],
+        "custom_agents": build_custom_agent_configs(project_root),
+        "agent": session_payload["agent"]["name"],
+    }
+    if model:
+        session_kwargs["model"] = model
+
+    async with CopilotClient() as client:
+        async with await client.create_session(**session_kwargs) as sdk_session:
+            reply = await sdk_session.send_and_wait(
+                session_payload["messages"][1]["content"],
+                timeout=timeout,
+            )
+
+    if reply is not None and isinstance(reply.data, AssistantMessageData):
+        return reply.data.content or ""
+    return ""
